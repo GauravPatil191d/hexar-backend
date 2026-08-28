@@ -17,26 +17,79 @@ const app = express();
 
 const PORT = process.env.PORT || 8000;
 
-// Middleware
+// ======================================================
+// CORS
+// ======================================================
+
+const allowedOrigins = [
+  "https://hexar-cms.vercel.app",
+  "https://hexar-frontend-five.vercel.app",
+
+  // Local development
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://hexar-cms.vercel.app",
-      "https://hexar-frontend-five.vercel.app",
+    origin: (origin, callback) => {
+      // Allow requests without origin (Postman, server-to-server, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.error(`CORS blocked for origin: ${origin}`);
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+
+    methods: [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE",
+      "OPTIONS",
     ],
+
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+    ],
+
+    credentials: true,
   }),
 );
 
-app.use(express.json());
+// Handle preflight requests
+app.options("*", cors());
 
+// ======================================================
+// Middleware
+// ======================================================
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ======================================================
 // Health check
+// ======================================================
+
 app.get("/", (req, res) => {
   res.json({
     message: "Hexar CMS server is running",
   });
 });
 
+// ======================================================
 // Routes
+// ======================================================
+
 app.use("/auth", AuthRouter);
 app.use("/upload", UploadRouter);
 app.use("/banners", BannerRouter);
@@ -44,20 +97,19 @@ app.use("/ribbon", RibbonRouter);
 app.use("/about", AboutRouter);
 app.use("/mission-vision", MissionVisionRouter);
 
+// ======================================================
+// Start Server
+// ======================================================
+
 async function startServer() {
   try {
     await connectDb();
 
     app.listen(PORT, () => {
-      console.log(
-        `Server running on port ${PORT}`,
-      );
+      console.log(`Server running on port ${PORT}`);
     });
   } catch (error) {
-    console.error(
-      "Unable to start server:",
-      error,
-    );
+    console.error("Unable to start server:", error);
 
     process.exit(1);
   }
