@@ -92,40 +92,52 @@ export default class MissionVisionService {
     return missionVision;
   }
 
-  static async UpdateMissionVisionService(
-    mission_vision_generated_id: string,
+static async UpdateMissionVisionService(
+  mission_vision_generated_id: string,
 
-    background_video: string,
+  background_video: string,
 
-    mission_title: string,
-    mission_description: string,
+  mission_title: string,
+  mission_description: string,
 
-    vision_title: string,
-    vision_description: string,
+  vision_title: string,
+  vision_description: string,
+) {
+  if (
+    !background_video ||
+    !mission_title ||
+    !mission_description ||
+    !vision_title ||
+    !vision_description
   ) {
-    const missionVisionData = {
-      background_video,
-
-      mission_title,
-      mission_description,
-
-      vision_title,
-      vision_description,
-    };
-
-    const result =
-      await MissionVisionRepository
-        .UpdateMissionVision(
-          mission_vision_generated_id,
-          missionVisionData,
-        );
-
-    if (result.matchedCount === 0) {
-      throw new Error(
-        "Mission Vision section not found",
-      );
-    }
-
-    return missionVisionData;
+    throw new Error(
+      "All Mission Vision fields are required",
+    );
   }
+
+  const missionVisionData = {
+    background_video,
+
+    mission_title,
+    mission_description,
+
+    vision_title,
+    vision_description,
+  };
+
+  const result =
+    await MissionVisionRepository
+      .UpdateMissionVision(
+        mission_vision_generated_id,
+        missionVisionData,
+      );
+
+  if (result.matchedCount === 0) {
+    throw new Error(
+      "Mission Vision section not found",
+    );
+  }
+
+  return missionVisionData;
+}
 }
