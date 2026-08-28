@@ -8,7 +8,7 @@ import { connectDb } from "./config/db.js";
 // Router
 import AuthRouter from "./modules/login/router/auth_router.js";
 import UploadRouter from "./service/upload-service/router/upload_router.js";
- import BannerRouter from "./modules/banners/router/banner_router.js";
+import BannerRouter from "./modules/banners/router/banner_router.js";
 import RibbonRouter from "./modules/ribbon/router/ribbon_router.js";
 import AboutRouter from "./modules/about/router/about_router.js";
 import MissionVisionRouter from "./modules/mission-vission/router/mission_vision_router.js";
@@ -20,7 +20,10 @@ const PORT = process.env.PORT || 8000;
 // Middleware
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "https://hexar-cms.vercel.app",
+      "https://hexar-frontend-five.vercel.app",
+    ],
   }),
 );
 
@@ -46,10 +49,15 @@ async function startServer() {
     await connectDb();
 
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(
+        `Server running on port ${PORT}`,
+      );
     });
   } catch (error) {
-    console.error("Unable to start server:", error);
+    console.error(
+      "Unable to start server:",
+      error,
+    );
 
     process.exit(1);
   }
