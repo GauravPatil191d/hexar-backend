@@ -33,7 +33,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests without origin (Postman, server-to-server, etc.)
+      // Allow Postman, server-to-server requests, etc.
       if (!origin) {
         return callback(null, true);
       }
@@ -61,13 +61,8 @@ app.use(
       "Authorization",
       "X-Requested-With",
     ],
-
-    credentials: true,
   }),
 );
-
-// Handle preflight requests
-app.options("*", cors());
 
 // ======================================================
 // Middleware
@@ -77,7 +72,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ======================================================
-// Health check
+// Health Check
 // ======================================================
 
 app.get("/", (req, res) => {
