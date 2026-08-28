@@ -16,17 +16,17 @@ BannerRouter.get(
 );
 
 BannerRouter.get(
-  "/get-banner-by-id:banner_generated_id",
+  "/get-banner-by-id/:banner_generated_id",
   BannerController.GetBannerByIdController,
 );
 
 BannerRouter.put(
-  "/update-banner:banner_generated_id",
+  "/update-banner/:banner_generated_id",
   BannerController.UpdateBannerController,
 );
 
 BannerRouter.delete(
-  "/delete-banner:banner_generated_id",
+  "/delete-banner/:banner_generated_id",
   BannerController.DeleteBannerController,
 );
 
